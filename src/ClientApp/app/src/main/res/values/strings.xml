@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">Job searching app</string>
+    <string name="company_details">Company details</string>
+    <string name="vacancy_details">Vacancy details</string>
+    <string name="loading">Loading…</string>
+    <string name="loading_failed">Loading failed :(</string>
+    <string name="retry">Retry</string>
+    <string name="company_name">Company name: %s</string>
+    <string name="phone_number">Phone number: %s</string>
+    <string name="field_of_activity">Field of activity: %s</string>
+    <string name="salary_level">Salary: %d</string>
+    <string name="candidate_level">Candidate level: %s</string>
+    <string name="job_title">Profession: %s</string>
+    <string name="vacancy_description">Description: %s</string>
+    <string name="back_button">Back action</string>
+    <string name="menu_button">Menu action\n\n</string>
+    <string name="resume_label">My resume</string>
+</resources>
