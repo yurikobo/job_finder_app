@@ -11,6 +11,7 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Tab
@@ -24,20 +25,21 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.core.common.UiState
+import com.core.common.UiState.Success
+import com.core.common.models.CompanyInfo
+import com.core.common.models.VacancyInfo
 import com.example.kotlincourse.R
-import com.example.kotlincourse.ui.components.ErrorScreen
-import com.example.kotlincourse.ui.components.LoadingScreen
-import com.example.kotlincourse.ui.models.ScreenUiState
+import com.example.kotlincourse.models.HomeScreenData
 import com.example.kotlincourse.ui.models.TabContentType
 import com.example.kotlincourse.ui.models.TabContentType.COMPANIES
 import com.example.kotlincourse.ui.models.TabContentType.VACANCIES
 import com.example.kotlincourse.ui.models.TabItem
-import com.feature.company.domain.models.CompanyDomainInfo
 
 
 @Composable
 fun HomeScreen(
-    uiState: ScreenUiState,
+    uiState: UiState<HomeScreenData>,
     retryAction: () -> Unit,
     onCompanyClick: (Long) -> Unit,
     onVacancyClick: (Long) -> Unit
@@ -82,39 +84,69 @@ fun HomeScreen(
         }
 
         when (uiState) {
-            is ScreenUiState.Success.HomeScreenData -> DetailsScreen(
+            is Success -> DetailsScreen(
                 uiState,
                 tabItems[selectedTabIndex].contentType,
                 onCompanyClick,
                 onVacancyClick
             )
 
-            is ScreenUiState.Loading -> LoadingScreen()
-            else -> ErrorScreen(retryAction)
+            is UiState.Loading -> LoadingScreen()
+            is UiState.Error -> ErrorScreen(uiState.message, retryAction)
         }
 
     }
 }
 
+@Composable
+fun LoadingScreen() {
+    Text(stringResource(com.feature.company.ui.R.string.now_loading))
+}
+
+@Composable
+fun ErrorScreen(message: String?, retryAction: () -> Unit) {
+    Column {
+        message?.let { Text(it) }
+        Button(onClick = retryAction) {
+            Text(stringResource(com.feature.company.ui.R.string.retry))
+        }
+    }
+
+
+}
+
 
 @Composable
 fun DetailsScreen(
-    uiState: ScreenUiState.Success.HomeScreenData,
+    uiState: Success<HomeScreenData>,
     tabType: TabContentType,
     onCompanyClick: (Long) -> Unit,
     onVacancyClick: (Long) -> Unit
 ) {
-    LazyColumn {
-        when (tabType) {
-            COMPANIES -> {
-                itemsIndexed(uiState.companyInfoList) { index, companyInfo ->
-                    CompanyInfoCard(companyInfo) { onCompanyClick(index + 1L) }
+
+    when (tabType) {
+        COMPANIES -> {
+            val companiesInfoList = uiState.data?.companiesList
+            if (companiesInfoList.isNullOrEmpty()) {
+                Text(text = "Nothing to show")
+            } else {
+                LazyColumn {
+                    itemsIndexed(companiesInfoList) { index, companyInfo ->
+                        CompanyInfoCard(companyInfo) { onCompanyClick(index + 1L) }
+                    }
                 }
             }
+        }
 
-            VACANCIES -> {
-                itemsIndexed(uiState.vacancyInfoList) { index, vacancyInfo ->
-                    VacancyCard(vacancyInfo) { onVacancyClick(index + 1L) }
+        VACANCIES -> {
+            val vacanciesInfoList = uiState.data?.vacanciesList
+            if (vacanciesInfoList.isNullOrEmpty()) {
+                Text(text = "Nothing to show")
+            } else {
+                LazyColumn {
+                    itemsIndexed(vacanciesInfoList) { index, vacancyInfo ->
+                        VacancyCard(vacancyInfo) { onVacancyClick(index + 1L) }
+                    }
                 }
             }
         }
@@ -125,7 +157,7 @@ fun DetailsScreen(
 
 @Composable
 fun VacancyCard(
-    vacancyInfo: com.example.domain.models.VacancyDomainInfo,
+    vacancyInfo: VacancyInfo,
     onVacancyClick: () -> Unit
 ) {
     val modifier = Modifier
@@ -154,8 +186,9 @@ fun VacancyCard(
 
 }
 
+
 @Composable
-fun CompanyInfoCard(companyInfo: CompanyDomainInfo, onCompanyClick: () -> Unit) {
+fun CompanyInfoCard(companyInfo: CompanyInfo, onCompanyClick: () -> Unit) {
     val modifier = Modifier
         .fillMaxSize()
         .padding(10.dp)

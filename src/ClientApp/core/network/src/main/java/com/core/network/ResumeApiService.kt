@@ -1,7 +1,7 @@
 package com.core.network
 
-import com.core.network.models.Resume
-import com.core.network.models.ResumeWithTags
+import com.core.network.models.ResumeResponse
+import com.core.network.models.ResumeWithTagsDTO
 import retrofit2.http.GET
 import retrofit2.http.Path
 
@@ -9,8 +9,8 @@ import retrofit2.http.Path
 interface ResumeApiService {
 
     @GET("resumes")
-    suspend fun getResumesList(): List<Resume>
+    suspend fun getResumesList(): List<ResumeResponse>
 
     @GET("resumes/{id}")
-    suspend fun getResumeWithTags(@Path("id") id: Long): ResumeWithTags?
+    suspend fun getResumeWithTags(@Path("id") id: Long): ResumeWithTagsDTO?
 }

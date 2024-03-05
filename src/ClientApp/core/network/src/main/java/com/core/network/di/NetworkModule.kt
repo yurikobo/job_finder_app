@@ -24,7 +24,6 @@ class NetworkModule {
 
     @Provides
     @Singleton
-//    fun provideOkhttpWithLogging(): OkHttpClient {
     fun provideOkhttpWithLogging(httpLoggingInterceptor: HttpLoggingInterceptor): OkHttpClient {
         return OkHttpClient().newBuilder()
             .callTimeout(10_000L, TimeUnit.MILLISECONDS)

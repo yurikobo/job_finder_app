@@ -14,5 +14,4 @@ interface CompanyDataLayerComponent : CompanyLayerComponentDependencies {
 
     override fun getCompanyRepository(): CompanyRepository
 
-//    val companyRepository: CompanyRepository
 }

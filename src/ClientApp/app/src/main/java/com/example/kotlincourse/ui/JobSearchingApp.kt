@@ -4,7 +4,6 @@ import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -25,7 +24,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -34,22 +32,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.core.common.navigation.NavigationConstants
 import com.example.kotlincourse.R
-import com.example.kotlincourse.ui.screens.CompanyScreen
-import com.example.kotlincourse.ui.screens.HomeScreen
-import com.example.kotlincourse.ui.screens.VacancyScreen
+import com.example.kotlincourse.navigation.AppNavController
+import com.example.kotlincourse.navigation.NavigationProvider
 import kotlinx.coroutines.launch
-
-
-enum class JobAppScreen(@StringRes val title: Int) {
-    START(title = R.string.app_name),
-    COMPANY_DETAILS(title = R.string.company_details),
-    VACANCY_DETAILS(title = R.string.vacancy_details),
-    RESUME_SCREEN(title = R.string.resume_label)
-}
 
 data class DrawerItem(
     val icon: ImageVector,
@@ -60,19 +48,20 @@ data class DrawerItem(
 @Composable
 fun JobSearchingApp(
     navController: NavHostController,
-    jobSearchingViewModel: JobSearchingViewModel
+    jobSearchingViewModel: JobSearchingViewModel,
+    navigationProvider: NavigationProvider
 ) {
 
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentScreen =
-        JobAppScreen.valueOf(backStackEntry?.destination?.route ?: JobAppScreen.START.name)
+        backStackEntry?.destination?.route ?: NavigationConstants.HOME_SCREEN.nestedRoute
 
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val drawerContent = listOf(
         DrawerItem(
             icon = Icons.Filled.AccountBox,
             contentDescription = R.string.resume_label,
-            onItemClick = { navController.navigate(JobAppScreen.RESUME_SCREEN.name) }
+            onItemClick = { }
         )
     )
     val scope = rememberCoroutineScope()
@@ -83,7 +72,7 @@ fun JobSearchingApp(
                 Text(
                     modifier = Modifier.padding(30.dp),
                     fontSize = 22.sp,
-                    text = "App menu"
+                    text = stringResource(R.string.app_menu)
                 )
                 LazyColumn {
                     items(drawerContent) { drawerItem ->
@@ -124,88 +113,28 @@ fun JobSearchingApp(
                 )
             }
         ) {
-
-
-            NavHost(
+            AppNavController(
+                jobSearchingViewModel = jobSearchingViewModel,
                 navController = navController,
-                startDestination = JobAppScreen.START.name,
-                modifier = Modifier
-                    .fillMaxSize()
-//                .verticalScroll(rememberScrollState())
-                    .padding(it)
-            ) {
-                composable(route = JobAppScreen.START.name) {
-                    LaunchedEffect(true) {
-                        jobSearchingViewModel.currentScreen = JobAppScreen.START
-                        jobSearchingViewModel.getScreenInfo()
-                    }
-                    HomeScreen(
-                        uiState = jobSearchingViewModel.screenUiState,
-                        retryAction = jobSearchingViewModel::getScreenInfo,
-                        onCompanyClick = { companyId ->
-                            jobSearchingViewModel.companyId = companyId
-                            navController.navigate(JobAppScreen.COMPANY_DETAILS.name)
-                        },
-                        onVacancyClick = { vacancyId ->
-                            jobSearchingViewModel.vacancyId = vacancyId
-                            navController.navigate(JobAppScreen.VACANCY_DETAILS.name)
-                        }
-                    )
-                }
-
-                composable(route = JobAppScreen.COMPANY_DETAILS.name) {
-                    LaunchedEffect(true) {
-                        jobSearchingViewModel.currentScreen = JobAppScreen.COMPANY_DETAILS
-                        jobSearchingViewModel.getScreenInfo()
-                    }
-
-                    CompanyScreen(
-                        uiState = jobSearchingViewModel.screenUiState,
-                        retryAction = jobSearchingViewModel::getScreenInfo,
-                        onVacancyClick = { vacancyId ->
-                            jobSearchingViewModel.vacancyId = vacancyId
-                            navController.navigate(JobAppScreen.VACANCY_DETAILS.name)
-                        }
-                    )
-                }
-                composable(route = JobAppScreen.VACANCY_DETAILS.name) {
-                    LaunchedEffect(true) {
-                        jobSearchingViewModel.currentScreen = JobAppScreen.VACANCY_DETAILS
-                        jobSearchingViewModel.getScreenInfo()
-                    }
-                    VacancyScreen(
-                        uiState = jobSearchingViewModel.screenUiState,
-                        retryAction = jobSearchingViewModel::getScreenInfo,
-                        onCompanyClick = {
-                            if (backStackEntry?.destination?.route == JobAppScreen.COMPANY_DETAILS.name) {
-                                navController.navigateUp()
-                            } else {
-                                navController.navigate(JobAppScreen.COMPANY_DETAILS.name)
-                            }
-                        }
-                    )
-                }
-
-                composable(route = JobAppScreen.RESUME_SCREEN.name) {
-
-                }
-            }
+                navigationProvider = navigationProvider,
+                modifier = Modifier.padding(it)
+            )
         }
-
     }
+
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun JobAppBar(
-    currentScreen: JobAppScreen,
+    currentScreen: String,
     canNavigateBack: Boolean,
     navigateUp: () -> Unit,
     onMenuButtonCLick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     TopAppBar(
-        title = { Text(text = stringResource(id = currentScreen.title)) },
+        title = { Text(text = currentScreen) },
         modifier = modifier,
         navigationIcon = {
             if (canNavigateBack) {
@@ -227,5 +156,6 @@ fun JobAppBar(
         }
     )
 }
+
 
 

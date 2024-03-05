@@ -1,4 +1,4 @@
-package com.example.kotlincourse.data.adapters
+package com.core.network.adapters
 
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.PrimitiveKind

@@ -8,6 +8,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
+import com.example.kotlincourse.navigation.NavigationProvider
 import com.example.kotlincourse.ui.JobSearchingApp
 import com.example.kotlincourse.ui.JobSearchingViewModel
 import com.example.kotlincourse.ui.theme.JobSearchingClientTheme
@@ -17,6 +18,9 @@ class MainActivity : ComponentActivity() {
 
     @Inject
     lateinit var jobSearchingViewModel: JobSearchingViewModel
+
+    @Inject
+    lateinit var navigationProvider: NavigationProvider
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,7 +32,11 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    JobSearchingApp(rememberNavController(), jobSearchingViewModel)
+                    JobSearchingApp(
+                        rememberNavController(),
+                        jobSearchingViewModel,
+                        navigationProvider
+                    )
                 }
 
             }

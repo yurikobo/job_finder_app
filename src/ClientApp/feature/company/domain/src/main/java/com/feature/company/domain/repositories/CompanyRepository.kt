@@ -1,9 +1,9 @@
 package com.feature.company.domain.repositories
 
-import com.feature.company.domain.models.CompanyDomain
-import com.feature.company.domain.models.CompanyDomainInfo
+import com.core.common.models.Company
+import com.core.common.models.CompanyInfo
 
 interface CompanyRepository {
-    suspend fun getCompaniesInfo(): List<CompanyDomainInfo>
-    suspend fun getCompanyDetails(id: Long): CompanyDomain?
+    suspend fun getCompaniesInfo(): List<CompanyInfo>
+    suspend fun getCompanyDetails(id: Long): Company?
 }
