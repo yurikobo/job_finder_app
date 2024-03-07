@@ -4,7 +4,6 @@ import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -48,7 +47,6 @@ data class DrawerItem(
 @Composable
 fun JobSearchingApp(
     navController: NavHostController,
-    jobSearchingViewModel: JobSearchingViewModel,
     navigationProvider: NavigationProvider
 ) {
 
@@ -61,7 +59,7 @@ fun JobSearchingApp(
         DrawerItem(
             icon = Icons.Filled.AccountBox,
             contentDescription = R.string.resume_label,
-            onItemClick = { }
+            onItemClick = { navController.navigate(NavigationConstants.RESUME_SCREEN.nestedRoute) }
         )
     )
     val scope = rememberCoroutineScope()
@@ -78,9 +76,8 @@ fun JobSearchingApp(
                     items(drawerContent) { drawerItem ->
                         Row(
                             modifier = Modifier
-                                .fillMaxWidth()
                                 .clickable {
-                                    drawerItem.onItemClick
+                                    drawerItem.onItemClick.invoke()
                                     scope.launch { drawerState.apply { close() } }
                                 }
                                 .padding(16.dp)
@@ -114,7 +111,6 @@ fun JobSearchingApp(
             }
         ) {
             AppNavController(
-                jobSearchingViewModel = jobSearchingViewModel,
                 navController = navController,
                 navigationProvider = navigationProvider,
                 modifier = Modifier.padding(it)
@@ -133,28 +129,31 @@ fun JobAppBar(
     onMenuButtonCLick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    TopAppBar(
-        title = { Text(text = currentScreen) },
-        modifier = modifier,
-        navigationIcon = {
-            if (canNavigateBack) {
-                IconButton(onClick = navigateUp) {
-                    Icon(
-                        imageVector = Icons.Filled.ArrowBack,
-                        contentDescription = stringResource(id = R.string.back_button)
-                    )
-                }
-            } else {
-                IconButton(onClick = onMenuButtonCLick) {
-                    Icon(
-                        imageVector = Icons.Filled.Menu,
-                        contentDescription = stringResource(id = R.string.menu_button)
-                    )
+    if (currentScreen != NavigationConstants.RESUME_SCREEN.screenRoute) {
+        TopAppBar(
+            title = { Text(text = currentScreen) },
+            modifier = modifier,
+            navigationIcon = {
 
+                if (canNavigateBack) {
+                    IconButton(onClick = navigateUp) {
+                        Icon(
+                            imageVector = Icons.Filled.ArrowBack,
+                            contentDescription = stringResource(id = R.string.back_button)
+                        )
+                    }
+                } else {
+                    IconButton(onClick = onMenuButtonCLick) {
+                        Icon(
+                            imageVector = Icons.Filled.Menu,
+                            contentDescription = stringResource(id = R.string.menu_button)
+                        )
+
+                    }
                 }
             }
-        }
-    )
+        )
+    }
 }
 
 

@@ -1,8 +1,12 @@
 package com.core.common.models
 
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+
+@Serializable
 data class CompanyInfo(
-    val id: Long,
-    val name: String,
-    val fieldOfActivity: FieldOfActivity
+    @SerialName("id") val id: Long,
+    @SerialName("name") val name: String,
+    @SerialName("field_of_activity") val fieldOfActivity: FieldOfActivity
 )

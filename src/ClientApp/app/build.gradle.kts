@@ -52,16 +52,23 @@ android {
 }
 
 dependencies {
-    implementation(project(":feature:company:data"))
-    implementation(project(":feature:vacancy:data"))
-    implementation(project(":feature:vacancy:data"))
+
+
     implementation(project(":core:network"))
     implementation(project(":core:common"))
     implementation(project(":core:featureapi"))
+    implementation(project(":feature:vacancy:data"))
     implementation(project(":feature:vacancy:domain"))
+    implementation(project(":feature:vacancy:ui"))
+    implementation(project(":feature:company:data"))
     implementation(project(":feature:company:domain"))
     implementation(project(":feature:company:ui"))
-    implementation(project(":feature:vacancy:ui"))
+    implementation(project(":feature:resume:data"))
+    implementation(project(":feature:resume:domain"))
+    implementation(project(":feature:resume:ui"))
+    implementation(project(":feature:infoscreen:ui"))
+    implementation(project(":feature:infoscreen:domain"))
+
 
     core()
     compose()

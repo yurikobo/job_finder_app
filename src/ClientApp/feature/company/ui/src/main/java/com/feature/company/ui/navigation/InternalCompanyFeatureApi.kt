@@ -27,8 +27,11 @@ internal class InternalCompanyFeatureApi @Inject constructor(private val company
                         companyViewModel.getScreenInfo()
                     })
                 CompanyScreen(
-                    companyViewModel.screenUiState,
-                    companyViewModel::getScreenInfo
+                    uiState = companyViewModel.screenUiState,
+                    onRetry = companyViewModel::getScreenInfo,
+                    onVacancyClick = { vacancyID, companyID ->
+                        navController.navigate(NavigationConstants.VACANCY_DETAILS_SCREEN.nestedRoute + "/$vacancyID=$companyID")
+                    }
                 )
             }
         }

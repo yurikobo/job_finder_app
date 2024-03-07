@@ -51,7 +51,7 @@ dependencies {
     implementation(project(":core:common"))
     implementation(project(":core:featureapi"))
     implementation(project(":feature:company:domain"))
-    implementation(project(":feature:company:data"))
+//    implementation(project(":feature:company:data"))
     core()
     compose()
     composeNavigation()

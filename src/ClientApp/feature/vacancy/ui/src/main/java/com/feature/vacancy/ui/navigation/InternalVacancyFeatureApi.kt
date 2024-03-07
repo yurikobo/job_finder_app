@@ -16,10 +16,11 @@ internal class InternalVacancyFeatureApi @Inject constructor(private val vacancy
     override fun registerGraph(navController: NavHostController, navGraphBuilder: NavGraphBuilder) {
         navGraphBuilder.navigation(
             startDestination = NavigationConstants.VACANCY_DETAILS_SCREEN.screenRoute,
-            route = NavigationConstants.VACANCY_DETAILS_SCREEN.nestedRoute + "/{vacancyId}"
+            route = NavigationConstants.VACANCY_DETAILS_SCREEN.nestedRoute + "/{vacancyId}={companyId}"
         ) {
             composable(NavigationConstants.VACANCY_DETAILS_SCREEN.screenRoute) { backStackEntry ->
                 val vacancyId = backStackEntry.arguments?.getString("vacancyId")?.toLongOrNull()
+                val companyId = backStackEntry.arguments?.getString("companyId")
                 LaunchedEffect(
                     key1 = true,
                     block = {
@@ -28,8 +29,15 @@ internal class InternalVacancyFeatureApi @Inject constructor(private val vacancy
                     })
                 VacancyScreen(
                     vacancyViewModel.screenUiState,
-                    vacancyViewModel::getScreenInfo,
-                )
+                    vacancyViewModel::getScreenInfo
+                ) {
+
+                    if (navController.previousBackStackEntry?.destination?.route == NavigationConstants.COMPANY_DETAILS_SCREEN.screenRoute) {
+                        navController.navigateUp()
+                    } else {
+                        navController.navigate(NavigationConstants.COMPANY_DETAILS_SCREEN.nestedRoute + "/$companyId")
+                    }
+                }
             }
         }
     }

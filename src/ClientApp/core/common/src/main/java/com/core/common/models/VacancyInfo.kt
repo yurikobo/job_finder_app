@@ -1,8 +1,12 @@
 package com.core.common.models
 
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class VacancyInfo(
-    val jobTitle: Profession,
-    val candidateLevel: CandidateLevel,
-    val salaryLevel: Int,
-    val companyName: String
+    @SerialName("job_title") val jobTitle: Profession,
+    @SerialName("candidate_level") val candidateLevel: CandidateLevel,
+    @SerialName("salary_level") val salaryLevel: Int,
+    @SerialName("company_name") val companyName: String
 )

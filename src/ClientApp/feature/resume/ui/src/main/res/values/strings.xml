@@ -1,0 +1,16 @@
+<resources>
+    <string name="retry">Retry</string>
+    <string name="now_loading">Now loading…</string>
+    <string name="candidate_name">Name: </string>
+    <string name="gender">Gender: </string>
+    <string name="profession">Profession: </string>
+    <string name="email">Email: </string>
+    <string name="phone">Phone number: </string>
+    <string name="education">Education: %s</string>
+    <string name="education_period">Ed.period: %s - %s</string>
+    <string name="education_description">Ed.description: %s</string>
+    <string name="company_name">Company name: %s</string>
+    <string name="job_period">Job period: %s - %s</string>
+    <string name="job_description">Job description: %s</string>
+    <string name="free_form">Free form: </string>
+</resources>

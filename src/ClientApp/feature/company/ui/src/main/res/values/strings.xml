@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="company_name">"Company: "</string>
-    <string name="field_of_activity">"Field of activity: "</string>
+    <string name="company_name">Company: %s</string>
+    <string name="field_of_activity">Field of activity: %s</string>
     <string name="retry">Retry</string>
-    <string name="title_activity_main">MainActivity</string>
-    <string name="phone_number">"Phone number: "</string>
-    <string name="job_title">"Job title: "</string>
-    <string name="candidate_level">"Candidate level: "</string>
-    <string name="salary_level">"Proposed salary: "</string>
-    <string name="now_loading">Now loading...</string>
+    <string name="phone_number">Phone number: %s</string>
+    <string name="job_title">Job title: %s</string>
+    <string name="candidate_level">Candidate level: %s</string>
+    <string name="salary_level">Proposed salary: %d</string>
+    <string name="now_loading">Now loading…</string>
+    <string name="list_of_vacancies">List of vacancies:</string>
+    <string name="no_vacancies_yet">No vacancies yet</string>
+    <string name="nothing_to_show">Nothing to show</string>
 </resources>

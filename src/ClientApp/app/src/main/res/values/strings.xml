@@ -1,9 +1,5 @@
 <resources>
     <string name="app_name">Job searching app</string>
-    <string name="company_details">Company details</string>
-    <string name="vacancy_details">Vacancy details</string>
-    <string name="loading">Loading…</string>
-    <string name="loading_failed">Loading failed :(</string>
     <string name="retry">Retry</string>
     <string name="company_name">Company name: %s</string>
     <string name="phone_number">Phone number: %s</string>

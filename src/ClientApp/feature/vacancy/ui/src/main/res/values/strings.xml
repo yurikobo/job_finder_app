@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="retry">Retry</string>
-    <string name="now_loading">Now loading...</string>
-    <string name="job_title">"Job title: "</string>
-    <string name="candidate_level">"Level: "</string>
-    <string name="salary_level">"Proposed salary: "</string>
-    <string name="vacancy_description">"Description: "</string>
-    <string name="title_activity_main">MainActivity</string>
+    <string name="now_loading">Now loading…</string>
+    <string name="job_title">Job title: %s</string>
+    <string name="candidate_level">Level: %s</string>
+    <string name="salary_level">Proposed salary: %d</string>
+    <string name="vacancy_description">Description: %s</string>
 </resources>

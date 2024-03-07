@@ -1,5 +1,8 @@
 package com.core.network.di
 
+import com.core.network.CompanyApiService
+import com.core.network.ResumeApiService
+import com.core.network.VacancyApiService
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
 import dagger.Provides
@@ -46,13 +49,18 @@ class NetworkModule {
     }
 
     @Provides
-    fun provideRetrofitCompanyService(retrofit: Retrofit): com.core.network.CompanyApiService {
-        return retrofit.create(com.core.network.CompanyApiService::class.java)
+    fun provideRetrofitCompanyService(retrofit: Retrofit): CompanyApiService {
+        return retrofit.create(CompanyApiService::class.java)
     }
 
     @Provides
-    fun provideRetrofitVacancyService(retrofit: Retrofit): com.core.network.VacancyApiService {
-        return retrofit.create(com.core.network.VacancyApiService::class.java)
+    fun provideRetrofitVacancyService(retrofit: Retrofit): VacancyApiService {
+        return retrofit.create(VacancyApiService::class.java)
+    }
+
+    @Provides
+    fun provideRetrofitResumeService(retrofit: Retrofit): ResumeApiService {
+        return retrofit.create(ResumeApiService::class.java)
     }
 
 }

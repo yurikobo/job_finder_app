@@ -10,18 +10,13 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 import com.example.kotlincourse.navigation.NavigationProvider
 import com.example.kotlincourse.ui.JobSearchingApp
-import com.example.kotlincourse.ui.JobSearchingViewModel
 import com.example.kotlincourse.ui.theme.JobSearchingClientTheme
 import javax.inject.Inject
 
 class MainActivity : ComponentActivity() {
 
     @Inject
-    lateinit var jobSearchingViewModel: JobSearchingViewModel
-
-    @Inject
     lateinit var navigationProvider: NavigationProvider
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,7 +29,6 @@ class MainActivity : ComponentActivity() {
                 ) {
                     JobSearchingApp(
                         rememberNavController(),
-                        jobSearchingViewModel,
                         navigationProvider
                     )
                 }

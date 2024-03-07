@@ -24,10 +24,11 @@ import com.feature.company.ui.R
 @Composable
 fun CompanyScreen(
     uiState: UiState<Company?>,
-    onRetry: () -> Unit
+    onRetry: () -> Unit,
+    onVacancyClick: (vacancyId: Long, Long) -> Unit
 ) {
     when (uiState) {
-        is UiState.Success -> CompanyDetails(uiState.data)
+        is UiState.Success -> CompanyDetails(uiState.data, onVacancyClick)
         is UiState.Loading -> LoadingScreen()
         is UiState.Error -> ErrorScreen(uiState.message, retryAction = { onRetry.invoke() })
     }
@@ -49,9 +50,9 @@ fun LoadingScreen() {
 }
 
 @Composable
-fun CompanyDetails(data: Company?) {
-    if (data == null) {
-        Text("Nothing to show")
+fun CompanyDetails(company: Company?, onVacancyClick: (Long, Long) -> Unit) {
+    if (company == null) {
+        Text(stringResource(R.string.nothing_to_show))
     } else {
         Column(
             verticalArrangement = Arrangement.Center,
@@ -61,37 +62,43 @@ fun CompanyDetails(data: Company?) {
                 .padding(10.dp)
             Text(
                 modifier = modifier,
-                text = stringResource(id = R.string.company_name, data.name)
+                text = stringResource(id = R.string.company_name, company.name)
             )
             Text(
                 modifier = modifier,
                 text = stringResource(
                     id = R.string.field_of_activity,
-                    data.fieldOfActivity.toString()
+                    company.fieldOfActivity.toString()
                 )
             )
             Text(
                 modifier = modifier,
-                text = stringResource(id = R.string.phone_number, data.contact)
+                text = stringResource(id = R.string.phone_number, company.contact)
             )
-            if (data.listOfVacancies.isNotEmpty()) {
+            if (company.listOfVacancies.isNotEmpty()) {
                 Text(
                     modifier = modifier,
-                    text = "List of vacancies:"
+                    text = stringResource(R.string.list_of_vacancies)
+                )
+                LazyColumn {
+                    items(company.listOfVacancies) { vacancy ->
+                        VacancyCard(
+                            vacancyInfo = VacancyInfo(
+                                jobTitle = vacancy.profession,
+                                candidateLevel = vacancy.level,
+                                salaryLevel = vacancy.salary,
+                                companyName = company.name
+                            )
+                        ) { onVacancyClick(vacancy.id, company.id) }
+                    }
+                }
+            } else {
+                Text(
+                    modifier = modifier,
+                    text = stringResource(R.string.no_vacancies_yet)
                 )
             }
-            LazyColumn {
-                items(data.listOfVacancies) { vacancy ->
-                    VacancyCard(
-                        vacancyInfo = VacancyInfo(
-                            jobTitle = vacancy.profession,
-                            candidateLevel = vacancy.level,
-                            salaryLevel = vacancy.salary,
-                            companyName = data.name
-                        )
-                    ) { /*onVacancyClick(vacancy.id)*/ }
-                }
-            }
+
         }
     }
 }

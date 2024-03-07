@@ -16,11 +16,12 @@ import com.feature.vacancy.ui.R
 @Composable
 fun VacancyScreen(
     uiState: UiState<Vacancy?>,
-    onRetry: () -> Unit
+    onRetry: () -> Unit,
+    onCompanyRefClick: () -> Unit
 ) {
 
     when (uiState) {
-        is UiState.Success -> VacancyDetails(uiState.data)
+        is UiState.Success -> VacancyDetails(uiState.data, onCompanyRefClick)
         is UiState.Loading -> LoadingScreen()
         is UiState.Error -> ErrorScreen(uiState.message, retryAction = { onRetry.invoke() })
     }
@@ -42,7 +43,7 @@ fun LoadingScreen() {
 }
 
 @Composable
-fun VacancyDetails(data: Vacancy?) {
+fun VacancyDetails(data: Vacancy?, onCompanyRefClick: () -> Unit) {
     if (data == null) {
         Text("Nothing to show")
     } else {
@@ -66,7 +67,8 @@ fun VacancyDetails(data: Vacancy?) {
             )
             Button(
                 modifier = modifier,
-                onClick = { /*onCompanyClick.invoke()*/ }) {
+                onClick = onCompanyRefClick
+            ) {
                 Text("To the company")
             }
         }

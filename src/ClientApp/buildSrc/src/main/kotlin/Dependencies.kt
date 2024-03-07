@@ -15,6 +15,7 @@ object Version {
     const val junitExtTest = "1.1.5"
     const val espressoCore = "3.5.1"
     const val coroutinesVersion = "1.3.9"
+    const val composeTracing = "1.0.0-alpha03"
 }
 
 object Deps {
@@ -23,6 +24,7 @@ object Deps {
     const val retrofit = "com.squareup.retrofit2:retrofit:${Version.retrofitVersion}"
     const val retrofitSerialization =
         "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:${Version.retrofitSerialization}"
+
     const val loggingInterceptor =
         "com.squareup.okhttp3:logging-interceptor:${Version.okHttp3Interceptor}"
     const val uiCompose = "androidx.compose.ui:ui"
@@ -35,6 +37,8 @@ object Deps {
     const val composeNavigation =
         "androidx.navigation:navigation-compose:${Version.composeNavigation}"
     const val composeBom = "androidx.compose:compose-bom:${Version.composePlatform}"
+    const val composeTracing = "androidx.compose.runtime:runtime-tracing:${Version.composeTracing}"
+
     const val dagger = "com.google.dagger:dagger:${Version.daggerVersion}"
     const val kaptDaggerCompiler = "com.google.dagger:dagger-compiler:${Version.daggerVersion}"
     const val viewModelLifecycleCompose =
@@ -47,7 +51,6 @@ object Deps {
     const val junitTestUiCompose = "androidx.compose.ui:ui-test-junit4"
     const val coroutines =
         "org.jetbrains.kotlinx:kotlinx-coroutines-android:${Version.coroutinesVersion}"
-
 
 }
 
@@ -80,9 +83,11 @@ fun DependencyHandler.compose() {
     debugImplementation(Deps.uiTestManifestCompose)
     implementation(Deps.composeActivity)
     implementation(Deps.viewModelLifecycleCompose)
+    implementation(Deps.composeTracing)
+
 }
 
-fun DependencyHandler.composeNavigation(){
+fun DependencyHandler.composeNavigation() {
     implementation(Deps.composeNavigation)
 }
 
