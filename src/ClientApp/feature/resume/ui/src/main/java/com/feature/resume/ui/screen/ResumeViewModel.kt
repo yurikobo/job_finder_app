@@ -1,5 +1,6 @@
 package com.feature.resume.ui.screen
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -12,6 +13,16 @@ import kotlinx.coroutines.launch
 import java.io.IOException
 import javax.inject.Inject
 
+//data class MutableResumeWithTags(var resume: MutableResume, var tagList: List<List<String>>)
+//
+//data class MutableResume(
+//    var id: Long,
+//    var candidateInfo: CandidateInfo,
+//    var educationList: List<Education>,
+//    var jobExperienceList: List<JobExperience>,
+//    var freeForm: String
+//)
+
 class ResumeViewModel @Inject constructor(
     private val getResumeUseCase: GetResumeUseCase
 ) : ViewModel() {
@@ -19,6 +30,10 @@ class ResumeViewModel @Inject constructor(
         private set
 
     var resumeId: Long = 1L
+
+    fun updateResume() {
+        screenUiState.data?.toString()?.let { Log.d("MyTag", it) }
+    }
 
     fun getScreenInfo() {
         viewModelScope.launch {

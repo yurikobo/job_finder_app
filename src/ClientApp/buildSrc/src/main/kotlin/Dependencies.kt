@@ -31,6 +31,7 @@ object Deps {
     const val uiGraphicsCompose = "androidx.compose.ui:ui-graphics"
     const val uiToolingPreviewCompose = "androidx.compose.ui:ui-tooling-preview"
     const val materialCompose = "androidx.compose.material3:material3"
+    const val materialIconsExtended = "androidx.compose.material:material-icons-extended"
     const val uiToolingCompose = "androidx.compose.ui:ui-tooling"
     const val uiTestManifestCompose = "androidx.compose.ui:ui-test-manifest"
     const val composeActivity = "androidx.activity:activity-compose:${Version.composeActivity}"
@@ -84,6 +85,7 @@ fun DependencyHandler.compose() {
     implementation(Deps.composeActivity)
     implementation(Deps.viewModelLifecycleCompose)
     implementation(Deps.composeTracing)
+    implementation(Deps.materialIconsExtended)
 
 }
 

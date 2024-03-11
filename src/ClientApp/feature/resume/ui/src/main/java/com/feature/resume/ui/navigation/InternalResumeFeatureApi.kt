@@ -51,7 +51,9 @@ internal class InternalResumeFeatureApi @Inject constructor(
                             screenMode = resumeUiMode,
                             currentScreen = NavigationConstants.RESUME_SCREEN.screenRoute,
                             canNavigateBack = navController.previousBackStackEntry != null,
-                            navigateUp = { navController.navigateUp() }
+                            navigateUp = { navController.navigateUp() },
+                            onSaveChanges = resumeViewModel::updateResume,
+                            onDiscardChanges = resumeViewModel::getScreenInfo
                         )
                     }
                 ) {
@@ -76,6 +78,8 @@ fun ResumeAppBar(
     currentScreen: String,
     canNavigateBack: Boolean,
     navigateUp: () -> Unit,
+    onSaveChanges: () -> Unit,
+    onDiscardChanges: () -> Unit,
     modifier: Modifier = Modifier
 ) {
 
@@ -96,7 +100,11 @@ fun ResumeAppBar(
                 }
 
                 ResumeUiMode.EDIT -> {
-                    IconButton(onClick = { screenMode.value = ResumeUiMode.VIEW }) {
+                    IconButton(onClick = {
+                        onDiscardChanges.invoke()
+                        screenMode.value = ResumeUiMode.VIEW
+                    }
+                    ) {
                         Icon(
                             imageVector = Icons.Filled.Close,
                             contentDescription = "test"
@@ -117,7 +125,11 @@ fun ResumeAppBar(
                 }
 
                 ResumeUiMode.EDIT -> {
-                    IconButton(onClick = { screenMode.value = ResumeUiMode.VIEW }) {
+                    IconButton(onClick = {
+                        onSaveChanges.invoke()
+                        screenMode.value = ResumeUiMode.VIEW
+                    }
+                    ) {
                         Icon(
                             imageVector = Icons.Filled.Done,
                             contentDescription = "test1"

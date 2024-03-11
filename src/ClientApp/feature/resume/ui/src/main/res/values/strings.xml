@@ -13,4 +13,6 @@
     <string name="job_period">Job period: %s - %s</string>
     <string name="job_description">Job description: %s</string>
     <string name="free_form">Free form: </string>
+    <string name="relocation">Relocation:</string>
+    <string name="birthdate">Birthdate:</string>
 </resources>

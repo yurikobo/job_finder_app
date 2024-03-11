@@ -9,18 +9,35 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountBox
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.School
+import androidx.compose.material.icons.filled.Work
+import androidx.compose.material.icons.outlined.AccountBox
+import androidx.compose.material.icons.outlined.School
+import androidx.compose.material.icons.outlined.WorkOutline
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -35,6 +52,8 @@ import com.core.common.models.JobExperience
 import com.core.common.models.ResumeWithTags
 import com.feature.resume.ui.R
 import com.feature.resume.ui.models.ResumeUiMode
+import com.feature.resume.ui.models.TabContentType
+import com.feature.resume.ui.models.TabItem
 
 @Composable
 fun ResumeScreen(
@@ -43,10 +62,62 @@ fun ResumeScreen(
     modifier: Modifier,
     screenMode: MutableState<ResumeUiMode>
 ) {
-    when (uiState) {
-        is UiState.Success -> ResumeDetails(uiState.data, screenMode, modifier)
-        is UiState.Loading -> LoadingScreen()
-        is UiState.Error -> ErrorScreen(uiState.message, retryAction = { onRetry.invoke() })
+    val tabItems = listOf(
+        TabItem(
+            contentType = TabContentType.COMMON,
+            unselectedIcon = Icons.Outlined.AccountBox,
+            selectedIcon = Icons.Filled.AccountBox
+        ),
+        TabItem(
+            contentType = TabContentType.EDUCATION,
+            unselectedIcon = Icons.Outlined.School,
+            selectedIcon = Icons.Filled.School
+        ),
+        TabItem(
+            contentType = TabContentType.JOB_EXPERIENCE,
+            unselectedIcon = Icons.Outlined.WorkOutline,
+            selectedIcon = Icons.Filled.Work
+        )
+
+
+    )
+    var selectedTabIndex by remember { mutableIntStateOf(0) }
+    Column(
+        modifier = modifier.fillMaxSize()
+    ) {
+
+        TabRow(selectedTabIndex = selectedTabIndex) {
+            tabItems.forEachIndexed { index, tabItem ->
+                Tab(
+                    selected = index == selectedTabIndex,
+                    onClick = { selectedTabIndex = index },
+                    text = {
+                        Text(text = tabItem.contentType.toString())
+                    },
+                    icon = {
+                        Icon(
+                            imageVector = if (index == selectedTabIndex) {
+                                tabItem.selectedIcon
+                            } else {
+                                tabItem.unselectedIcon
+                            },
+                            contentDescription = tabItem.contentType.toString()
+                        )
+                    }
+                )
+            }
+
+        }
+        when (uiState) {
+            is UiState.Success -> ResumeDetails(
+                uiState.data,
+                tabItems[selectedTabIndex].contentType,
+                screenMode
+            )
+
+            is UiState.Loading -> LoadingScreen()
+            is UiState.Error -> ErrorScreen(uiState.message, retryAction = onRetry)
+        }
     }
 }
 
@@ -66,58 +137,91 @@ fun LoadingScreen() {
 @Composable
 fun ResumeDetails(
     data: ResumeWithTags?,
-    screenMode: MutableState<ResumeUiMode>,
-    modifier: Modifier
+    tabContent: TabContentType,
+    screenMode: MutableState<ResumeUiMode>
 ) {
     if (data != null) {
-        val isEditable = screenMode.value == ResumeUiMode.EDIT
-        Column(modifier = modifier) {
-            Text(text = "Candidate info")
-            CandidateInfoBox(data.resume.candidateInfo, isEditable)
-            Text(text = "Education List")
-            LazyColumn(modifier = Modifier.weight(1F)) {
-                items(data.resume.educationList) { education ->
-                    EducationCard(education, isEditable)
+        when (tabContent) {
+            TabContentType.COMMON -> {
+                Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+                    CandidateInfoBox(data.resume.candidateInfo, screenMode)
+                    EditableRow(
+                        stringResource(id = R.string.free_form),
+                        data.resume.freeForm,
+                        screenMode
+                    )
+                    LazyRow {
+                        items(data.tagList) {
+                            Card {
+                                Text(text = it[1])
+                            }
+                        }
+                    }
                 }
-            }
-            Text(text = "Job experience list")
-            LazyColumn(modifier = Modifier.weight(1F)) {
-                items(data.resume.jobExperienceList) { jobExperience ->
-                    JobExperienceCard(jobExperience, isEditable)
-                }
-            }
-            Text(text = "Free form")
 
-            EditableRow(stringResource(id = R.string.free_form), data.resume.freeForm, isEditable)
+            }
+
+            TabContentType.EDUCATION -> {
+                LazyColumn {
+                    itemsIndexed(data.resume.educationList) { index, education ->
+                        EducationCard(education, screenMode) {
+                            TODO("Deletion logic - not yet implemented")
+                        }
+                    }
+                }
+            }
+
+            TabContentType.JOB_EXPERIENCE -> {
+                LazyColumn {
+                    items(data.resume.jobExperienceList) { jobExperience ->
+                        JobExperienceCard(jobExperience, screenMode) {
+                            TODO("Deletion logic - not yet implemented")
+                        }
+                    }
+                }
+            }
         }
+
     }
 }
 
 
 @Composable
-fun CandidateInfoBox(candidateInfo: CandidateInfo, isEditable: Boolean) {
+fun CandidateInfoBox(candidateInfo: CandidateInfo, screenMode: MutableState<ResumeUiMode>) {
     Column {
-        EditableRow(stringResource(id = R.string.candidate_name), candidateInfo.name, isEditable)
+        EditableRow(stringResource(id = R.string.candidate_name), candidateInfo.name, screenMode)
+        EditableRow(
+            stringResource(id = R.string.birthdate),
+            candidateInfo.birthDate.toString(),
+            screenMode
+        )
         DropdownMenuWithEnumContent(
             label = stringResource(id = R.string.gender),
-            isEditable = isEditable,
+            screenMode = screenMode,
             candidateInfo.gender
         )
         DropdownMenuWithEnumContent(
             label = stringResource(id = R.string.profession),
-            isEditable = isEditable,
+            screenMode = screenMode,
             candidateInfo.profession
         )
-        EditableRow(stringResource(id = R.string.email), candidateInfo.contact.email, isEditable)
-        EditableRow(stringResource(id = R.string.phone), candidateInfo.contact.phone, isEditable)
+        DropdownMenuWithEnumContent(
+            label = stringResource(id = R.string.relocation),
+            screenMode = screenMode,
+            candidateInfo.relocation
+        )
+        EditableRow(stringResource(id = R.string.email), candidateInfo.contact.email, screenMode)
+        EditableRow(stringResource(id = R.string.phone), candidateInfo.contact.phone, screenMode)
     }
 }
 
 @Composable
-fun EditableRow(label: String, editableString: String, isEnabled: Boolean) {
+fun EditableRow(label: String, editableString: String, screenMode: MutableState<ResumeUiMode>) {
     val string = remember { mutableStateOf(editableString) }
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(10.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -126,7 +230,8 @@ fun EditableRow(label: String, editableString: String, isEnabled: Boolean) {
         TextField(
             value = string.value,
             onValueChange = { string.value = it },
-            readOnly = !isEnabled
+            enabled = screenMode.value == ResumeUiMode.EDIT,
+            singleLine = true
         )
     }
 
@@ -136,32 +241,40 @@ fun EditableRow(label: String, editableString: String, isEnabled: Boolean) {
 @Composable
 inline fun <reified E : Enum<E>> DropdownMenuWithEnumContent(
     label: String,
-    isEditable: Boolean,
+    screenMode: MutableState<ResumeUiMode>,
     enum: E
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(10.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(text = label)
         Spacer(modifier = Modifier.width(10.dp))
         var expanded by remember { mutableStateOf(false) }
+        var value by remember { mutableStateOf(enum) }
         ExposedDropdownMenuBox(
-            expanded = if (isEditable) expanded else false,
-            onExpandedChange = { expanded = !expanded }
+            expanded = expanded,
+            onExpandedChange = {
+                if (screenMode.value == ResumeUiMode.EDIT) {
+                    expanded = !expanded
+                }
+            }
         ) {
             TextField(
-                value = enum.toString(),
+                value = value.toString(),
                 onValueChange = {},
-                enabled = isEditable,
+                enabled = screenMode.value == ResumeUiMode.EDIT,
                 trailingIcon = {
-                    if (isEditable) {
-                        ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
-                    }
+                    if (screenMode.value == ResumeUiMode.EDIT) ExposedDropdownMenuDefaults.TrailingIcon(
+                        expanded = expanded
+                    )
                 },
-                modifier = Modifier.menuAnchor()
-//                    .padding(start = 20.dp, top = 10.dp, end = 10.dp)
+                modifier = Modifier.menuAnchor(),
+                singleLine = true,
+                readOnly = true
             )
             ExposedDropdownMenu(
                 expanded = expanded,
@@ -170,7 +283,10 @@ inline fun <reified E : Enum<E>> DropdownMenuWithEnumContent(
                 enumValues<E>().forEach {
                     DropdownMenuItem(
                         text = { Text(text = it.toString()) },
-                        onClick = { expanded = false }
+                        onClick = {
+                            value = it
+                            expanded = false
+                        }
                     )
                 }
             }
@@ -180,41 +296,92 @@ inline fun <reified E : Enum<E>> DropdownMenuWithEnumContent(
 
 
 @Composable
-fun EducationCard(education: Education, isEditable: Boolean) {
+fun EducationCard(
+    education: Education, screenMode: MutableState<ResumeUiMode>, onDelete: () -> Unit
+) {
     Card(
         modifier = Modifier
             .fillMaxSize()
             .padding(10.dp)
     ) {
-        Text(text = stringResource(id = R.string.education, education.type))
-        Text(
-            text = stringResource(
-                id = R.string.education_period,
-                education.startYear,
-                education.endYear
-            )
-        )
-        Text(text = stringResource(id = R.string.education_description, education.description))
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(10.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column {
+                Text(text = stringResource(id = R.string.education, education.type))
+                Text(
+                    text = stringResource(
+                        id = R.string.education_period,
+                        education.startYear,
+                        education.endYear
+                    )
+                )
+                Text(
+                    text = stringResource(
+                        id = R.string.education_description,
+                        education.description
+                    )
+                )
+            }
+            if (screenMode.value == ResumeUiMode.EDIT) {
+                IconButton(onClick = onDelete) {
+                    Icon(
+                        imageVector = Icons.Filled.Delete,
+                        contentDescription = "test"
+                    )
+                }
+            }
+        }
+
     }
 
 }
 
 @Composable
-fun JobExperienceCard(jobExperience: JobExperience, isEditable: Boolean) {
+fun JobExperienceCard(
+    jobExperience: JobExperience, screenMode: MutableState<ResumeUiMode>, onDelete: () -> Unit
+) {
     Card(
         modifier = Modifier
             .fillMaxSize()
             .padding(10.dp)
     ) {
-        Text(text = stringResource(id = R.string.company_name, jobExperience.companyName))
-        Text(
-            text = stringResource(
-                id = R.string.job_period,
-                jobExperience.dateStart,
-                jobExperience.dateEnd
-            )
-        )
-        Text(text = stringResource(id = R.string.job_description, jobExperience.description))
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(10.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column {
+                Text(text = stringResource(id = R.string.company_name, jobExperience.companyName))
+                Text(
+                    text = stringResource(
+                        id = R.string.job_period,
+                        jobExperience.dateStart,
+                        jobExperience.dateEnd
+                    )
+                )
+                Text(
+                    text = stringResource(
+                        id = R.string.job_description,
+                        jobExperience.description
+                    )
+                )
+            }
+            if (screenMode.value == ResumeUiMode.EDIT) {
+                IconButton(onClick = onDelete) {
+                    Icon(
+                        imageVector = Icons.Filled.Delete,
+                        contentDescription = "test"
+                    )
+                }
+            }
+        }
     }
 }
 
