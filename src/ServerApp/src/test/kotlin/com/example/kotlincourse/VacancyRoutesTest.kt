@@ -1,6 +1,5 @@
 package com.example.kotlincourse
 
-import com.example.kotlincourse.data.CompanyData
 import com.example.kotlincourse.data.models.VacancyInfo
 import com.example.kotlincourse.plugins.configureSerialization
 import com.example.kotlincourse.plugins.vacancyModule
@@ -16,7 +15,7 @@ class VacancyRoutesTest {
     @Test
     fun testCompanyRouteFindAll() = testApplication {
         application {
-            vacancyModule()
+            vacancyModule(appContainer.getVacanciesListUseCase(), appContainer.getVacancyDetailsUseCase())
             configureSerialization()
         }
         client.get("/vacancies").apply {
@@ -42,7 +41,7 @@ class VacancyRoutesTest {
     @Test
     fun testCompanyRouteFindById() = testApplication {
         application {
-            vacancyModule()
+            vacancyModule(appContainer.getVacanciesListUseCase(), appContainer.getVacancyDetailsUseCase())
             configureSerialization()
         }
 
@@ -60,7 +59,7 @@ class VacancyRoutesTest {
     @Test
     fun testCompanyRouteIncorrectInput() = testApplication {
         application {
-            vacancyModule()
+            vacancyModule(appContainer.getVacanciesListUseCase(), appContainer.getVacancyDetailsUseCase())
             configureSerialization()
         }
 

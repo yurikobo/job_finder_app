@@ -18,6 +18,7 @@ object ResumeData {
         Resume(
             id = 1,
             candidateInfo = CandidateInfo(
+                id = 1,
                 name = "First candidate name",
                 profession = QA,
                 gender = MALE,
@@ -61,6 +62,7 @@ object ResumeData {
         ), Resume(
             id = 2,
             candidateInfo = CandidateInfo(
+                id = 2,
                 name = "Second candidate name",
                 profession = DEVELOPER,
                 gender = FEMALE,

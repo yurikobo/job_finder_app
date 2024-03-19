@@ -7,6 +7,8 @@ import java.time.LocalDate
 
 @Serializable
 data class CandidateInfo(
+    @SerialName("id")
+    val id: Long,
     @SerialName("name")
     val name: String,
     @SerialName("profession")

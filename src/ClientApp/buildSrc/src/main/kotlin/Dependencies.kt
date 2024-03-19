@@ -16,6 +16,7 @@ object Version {
     const val espressoCore = "3.5.1"
     const val coroutinesVersion = "1.3.9"
     const val composeTracing = "1.0.0-alpha03"
+    const val roomVersion = "2.6.1"
 }
 
 object Deps {
@@ -53,6 +54,9 @@ object Deps {
     const val coroutines =
         "org.jetbrains.kotlinx:kotlinx-coroutines-android:${Version.coroutinesVersion}"
 
+    const val roomKtx = "androidx.room:room-ktx:${Version.roomVersion}"
+    const val roomCompiler = "androidx.room:room-compiler:${Version.roomVersion}"
+
 }
 
 fun DependencyHandler.core() {
@@ -70,6 +74,11 @@ fun DependencyHandler.retrofit() {
     implementation(Deps.retrofit)
     implementation(Deps.retrofitSerialization)
     implementation(Deps.loggingInterceptor)
+}
+
+fun DependencyHandler.room() {
+    implementation(Deps.roomKtx)
+    kapt(Deps.roomCompiler)
 }
 
 fun DependencyHandler.compose() {

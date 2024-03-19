@@ -5,23 +5,25 @@ import kotlinx.serialization.Serializable
 import org.jetbrains.exposed.sql.Table
 
 @Serializable
-enum class EducationType {
-    @SerialName("higher")
-    HIGHER,
+enum class Relocation {
+    @SerialName("preferable")
+    PREFERABLE,
 
-    @SerialName("secondary")
-    SECONDARY,
+    @SerialName("possible")
+    POSSIBLE,
 
-    @SerialName("secondary special")
-    SECONDARY_SPECIAL;
+    @SerialName("is not possible")
+    IS_NOT_POSSIBLE;
 
     override fun toString(): String = name.lowercase().replaceFirstChar { it.uppercase() }.replace("_", " ")
 }
 
-object EducationTypes : Table() {
+object Relocations : Table() {
+
     val id = long("id").autoIncrement()
-    val educationType = varchar("education_type", 50)
+    val relocationType = varchar("relocation_type", 50)
 
     override val primaryKey = PrimaryKey(id)
+
 
 }

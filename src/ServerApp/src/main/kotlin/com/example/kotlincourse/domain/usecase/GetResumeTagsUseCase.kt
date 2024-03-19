@@ -12,14 +12,18 @@ internal val LOGGER = KtorSimpleLogger("com.example.kotlincourse")
 class GetResumeTagsUseCase {
 
 
-    fun execute(resume: Resume): List<ResumeTag> {
+    suspend fun execute(resume: Resume): List<ResumeTag> {
         val tagList = mutableListOf<ResumeTag>()
-        val professionTag = resume.candidateInfo.profession
-        LOGGER.info(professionTag.name)
-        tagList.add(professionTag)
-        getCandidateLevel(resume.jobExperienceList)?.let {
-            LOGGER.info(it.name)
-            tagList.add(it)
+        if (resume.candidateInfo != null) {
+            val professionTag = resume.candidateInfo.profession
+            LOGGER.info(professionTag.name)
+            tagList.add(professionTag)
+            if (!resume.jobExperienceList.isNullOrEmpty()) {
+                getCandidateLevel(resume.jobExperienceList)?.let {
+                    LOGGER.info(it.name)
+                    tagList.add(it)
+                }
+            }
         }
         return tagList
     }

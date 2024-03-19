@@ -18,7 +18,7 @@ class ResumeRoutesTest {
     @Test
     fun testResumeRouteFindAll() = testApplication {
         application {
-            resumeModule()
+            resumeModule(appContainer.getResumeListUseCase(), appContainer.getResumeUseCase())
             configureSerialization()
         }
         client.get("/resumes").apply {
@@ -35,7 +35,7 @@ class ResumeRoutesTest {
     @Test
     fun testResumeRouteFindById() = testApplication {
         application {
-            resumeModule()
+            resumeModule(appContainer.getResumeListUseCase(), appContainer.getResumeUseCase())
             configureSerialization()
         }
 
@@ -53,7 +53,7 @@ class ResumeRoutesTest {
     @Test
     fun testResumeRouteIncorrectInput() = testApplication {
         application {
-            resumeModule()
+            resumeModule(appContainer.getResumeListUseCase(), appContainer.getResumeUseCase())
             configureSerialization()
         }
 
@@ -79,7 +79,7 @@ class ResumeRoutesTest {
     @Test
     fun testResumeRoutesPostValidIdTest() = testApplication {
         application {
-            resumeModule()
+            resumeModule(appContainer.getResumeListUseCase(), appContainer.getResumeUseCase())
             configureSerialization()
         }
         val client = createClient {
@@ -121,7 +121,7 @@ class ResumeRoutesTest {
     @Test
     fun testResumeRoutesPostInvalidIdTest() = testApplication {
         application {
-            resumeModule()
+            resumeModule(appContainer.getResumeListUseCase(), appContainer.getResumeUseCase())
             configureSerialization()
         }
         val client = createClient {
@@ -191,7 +191,7 @@ class ResumeRoutesTest {
     @Test
     fun testResumeRouteTags() = testApplication {
         application {
-            resumeModule()
+            resumeModule(appContainer.getResumeListUseCase(), appContainer.getResumeUseCase())
             configureSerialization()
         }
 

@@ -1,8 +1,9 @@
 package com.example.kotlincourse.domain.usecase
 
 import com.example.kotlincourse.domain.repository.CompanyRepository
+import javax.inject.Inject
 
-class GetCompanyDetailsUseCase(private val companyRepository: CompanyRepository) {
+class GetCompanyDetailsUseCase @Inject constructor(private val companyRepository: CompanyRepository) {
 
-    fun execute(id: Long) = companyRepository.findById(id)
+    suspend fun execute(id: Long) = companyRepository.findById(id)
 }

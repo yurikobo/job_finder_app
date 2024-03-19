@@ -1,6 +1,5 @@
 package com.example.kotlincourse
 
-import com.example.kotlincourse.data.CompanyData
 import com.example.kotlincourse.data.models.CompanyInfo
 import com.example.kotlincourse.plugins.companyModule
 import com.example.kotlincourse.plugins.configureSerialization
@@ -16,14 +15,14 @@ class CompanyRoutesTest {
     @Test
     fun testCompanyRouteFindAll() = testApplication {
         application {
-            companyModule()
+            companyModule(appContainer.getCompaniesInfoListUseCase(), appContainer.getCompanyDetailsUseCase())
             configureSerialization()
         }
         client.get("/companies").apply {
             assertEquals(HttpStatusCode.OK, status)
 
             assertEquals(
-                CompanyData.companyList.map { CompanyInfo(it.name, it.fieldOfActivity) },
+                CompanyData.companyList.map { CompanyInfo(it.id, it.name, it.fieldOfActivity) },
                 Json.decodeFromString(bodyAsText())
             )
         }
@@ -33,7 +32,7 @@ class CompanyRoutesTest {
     @Test
     fun testCompanyRouteFindById() = testApplication {
         application {
-            companyModule()
+            companyModule(appContainer.getCompaniesInfoListUseCase(), appContainer.getCompanyDetailsUseCase())
             configureSerialization()
         }
 
@@ -50,7 +49,7 @@ class CompanyRoutesTest {
     @Test
     fun testCompanyRouteIncorrectInput() = testApplication {
         application {
-            companyModule()
+            companyModule(appContainer.getCompaniesInfoListUseCase(), appContainer.getCompanyDetailsUseCase())
             configureSerialization()
         }
 

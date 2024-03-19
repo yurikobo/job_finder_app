@@ -2,8 +2,9 @@ package com.example.kotlincourse.domain.usecase
 
 import com.example.kotlincourse.data.models.Resume
 import com.example.kotlincourse.domain.repository.ResumeRepository
+import javax.inject.Inject
 
-class GetResumeListUseCase(private val resumeRepository: ResumeRepository) {
+class GetResumeListUseCase @Inject constructor(private val resumeRepository: ResumeRepository) {
 
-    fun execute(): List<Resume> = resumeRepository.findAll()
+    suspend fun execute(): List<Resume> = resumeRepository.findAll()
 }
